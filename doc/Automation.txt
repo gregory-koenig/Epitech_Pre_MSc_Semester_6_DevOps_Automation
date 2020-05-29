@@ -1,0 +1,81 @@
+Automation
+
+Problématique : Deployer server -> chiant a installer, répétition des taches (risque d'erreur), compliquer à maintenir si serveur nombreux.
+
+Notion importante : cas entreprise qui gere des serveurs, roulements de personnels -> perte de savoir, si non documenter, travail non tracer. Début de piste trouvé par admin sys, serveur installer par un bout de scrip bash / python qui installent des parties de serveur.
+
+Service qui existent pour automatiser le déploiment d'un ou plusieurs serveur, pour la plupart il y a notion d'agent, partie serveur sur le serveur et partie client pour envoyer les ordre pour que le serveur fasse des installations. 
+
+Avec Ansible pas d'installation d'agent, ca passe sur le protocole ssh, rien besoin de plus pour gerer le serveur à distance. La configuration visible par un humain, pas trop de skill pour comprendre donc syntax simple. Désaventage : on part sur du ssh -> compte banni sur les systeme qui sont différents de linux. Aussi, notion d'idempotent, assez lourd, il faut une machine client très performante. 
+
+Serveur de BDD : créer une tache dans les conf, un name, component qui correspond (yum, apt) qui vont surcouché yum ou apt, suivi du nom du packet
+yum: 
+	name: mysql-version
+	state: present (latest version)
+
+2eme task qui va configurer le démarrage du service des le boot
+
+name: Start Mysql Service and ensure it starts at boot time
+service:
+	enabled: yes
+
+AUTRE CAS : 
+
+Création de serveur
+
+mysql_db:
+	name: DATABASE NAME
+	state: present
+
+mysql_user: pour créer un user
+	name: paul
+	password: phénix
+	host: localhost
+	state: present
+
+Les bonnes pratiques : utiliser des variables, role réutilisable, nomme les taches.
+
+ATTENTION : docker non autorisé dans le projet attention donc soit déploiement sur notre pc ou VM sur une distribution au choix. Pour chaque service : 1 VM, mot de passe sécurisé, dans le fichier conf postgres, fichier chargé et envoyé a Ansible pour crypter (voir VOLT), il faut regex, il ne doit pas etre en dur.
+
+Le projet va se composer de pluysieurs choses :
+
+playbook : fichier a la racine qui définissent les regles sur les serveurs, ici déployer apache sur php3 et la base pour déployer symfony
+
+- hosts : www-apache-symfony
+	remote-user : root
+	roles :
+		- common
+		- apache2
+		- php7.3
+		- symfony
+
+host : group de serveur 
+[www-apache-symfony]
+127.0.0.1
+
+dossier main:
+- name: Update the apt package index (apt update && upgrade)
+- name: Set authorized key token
+
+On peut utiliser des variable partout
+
+lineinfile : remplacer ligne dans un fichier
+
+Comment ca fonctionne ? 
+
+Pour exécuter : run.sh : ansible-playbook playbook.yml -i hosts -k
+-k 
+-i : fichier comportant les adresses
+pour mdp serveur (attention ligne vide dans host)
+
+Toutes les actions vont être éxécuté une par une
+
+Pour le projet : 5 serveur, 5 VM (512Mo de mémoire ca fonctionnera)
+
+base : base commune sur tous les serveurs (par exemple debian)
+
+Ansible Galaxy genere automatiquement l'architecure (interdit pour le projet).
+
+All : reprend l'ensemble du serveur (digital ocean si on se crée un compte epitech dessus on a déjà un montant crédit donc on peut faire nos VM dessus, projet suivant Kubernetes)
+
+Debut semaine prochaine Mardi ou Mercredi  (18 - 19 mai) : Moulinette ! et Review
