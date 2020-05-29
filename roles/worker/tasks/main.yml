@@ -1,0 +1,27 @@
+---
+
+- name: Unarchive worker.tar
+  unarchive:
+    src: result.tar
+    dest: ~/
+    copy: yes
+
+- name: Install maven 
+  become: yes
+  apt: 
+    name: maven
+
+- name: Install openjdk 
+  become: yes
+  apt: 
+    name: openjdk-8-jre
+
+- name: Resolve maven dependencies
+  shell: 
+    chdir: ~/worker
+    cmd: mvn dependency:resolve
+
+- name: Run the worker
+  shell:
+    chdir: ~/worker
+    cmd: java -jar worker-jar-with-dependencies.jar

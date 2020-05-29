@@ -1,0 +1,46 @@
+---
+
+- name: Update and upgrade apt packages
+  become: true
+  apt:
+    upgrade: yes
+    update_cache: yes
+
+- name: Remove useless packages from the cache
+  apt:
+    autoclean: yes
+
+- name: Remove dependencies that are no longer required
+  apt:
+    autoremove: yes
+
+- name: Server installation
+  apt:
+    pkg:
+    - ssh
+    - openssh-server
+    state: present
+
+- name: Editor installation
+  apt:
+    pkg:
+    - vim-nox
+    - nano
+    state: present
+
+- name: Net-tools installation
+  apt:
+    name: net-tools
+    state: present
+
+- name: Python installation
+  apt:
+    name: python2
+    state: present
+
+- name: Sudo installation
+  apt:
+    name: sudo
+    state: present
+# curl, git, unzip or tar, pip, pip3
+# python et ssh ko

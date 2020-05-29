@@ -1,0 +1,21 @@
+---
+
+- name: Unarchive result.tar
+  unarchive:
+    src: result.tar
+    dest: ~/
+    copy: yes
+
+- name: Install node and npm
+  apt:
+    become: yes
+    pkg:
+      - node
+      - npm
+
+- name: Install dependencies
+  npm:
+    path: ~/result/package.json
+
+- name: Run result
+  shell: node ~/result/server.js

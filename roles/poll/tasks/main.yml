@@ -1,0 +1,14 @@
+---
+
+- name: Unarchive poll.tar
+  unarchive:
+    src: poll.tar
+    dest: ~/
+    copy: yes
+
+- name: Install requirements
+  pip: 
+    name: ~/poll/requirements.txt
+
+- name: Run server
+  shell: "flask run --host=0.0.0.0 --port=80"

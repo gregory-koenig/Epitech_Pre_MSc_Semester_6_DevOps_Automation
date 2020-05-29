@@ -1,0 +1,31 @@
+---
+
+- name: Including base elements
+  hosts: queue1,db1,webapp1,webapp2,backend1
+  roles:
+    - role: base
+
+- name: Deploying postgresql
+  hosts: db1
+  roles: 
+    - role: postgresql
+
+- name: Deploying worker
+  hosts: backend1
+  roles: 
+    - role: worker
+
+- name: Deploying redis
+  hosts: queue1
+  roles: 
+    - role: redis
+
+- name: Deploying poll
+  hosts: webapp1
+  roles: 
+    - role: poll
+
+- name: Deploying result
+  hosts: webapp2
+  roles: 
+    - role: result

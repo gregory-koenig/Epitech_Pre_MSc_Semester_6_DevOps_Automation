@@ -1,0 +1,34 @@
+---
+
+- name: PostgreSQL installation
+  apt:
+    pkg:
+    - postgresql-12
+    - postgresql-client-12
+    state: present
+    update_cache: true
+
+- name: PostgreSQL service activation
+  service:
+    name: postgresql
+    state: started
+    enabled: yes
+
+- name: Schema database creation
+  postgresql_db:
+    name: paul
+    state: present
+
+- name: User creation
+  postgresql_user:
+    name: paul
+    password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          65383734303031663637346364383537323438303538313864323562306631313231643966643830
+          3833383433373938313465633034393637636266356263350a396564663161366234393232643066
+          61346137363933346634653065306563346638303664663232353332313064363939633365343331
+          6263346365393633630a376431356262663238653139363637626131383365343638393133356635
+          3834
+    priv: paul.*:ALL
+    role_attr_flags: NOSUPERUSER,NOCREATEDB
+    state: present
